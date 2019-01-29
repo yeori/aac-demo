@@ -16,12 +16,21 @@ public class ImagePathTest {
 	public void test_read_images() {
 		A2cContext ctx = new A2cContext("E:\\tmp\\aac\\demo-img.xlsx");
 		WordDao dao = new WordDao(ctx);
-		List<Picture> pics = dao.readPictures();
+		List<Picture> pics = dao.readPictures("main");
 		for(Picture each : pics) {
+			each.getRowIndex();
+			each.getPicteBytes();
 			System.out.println(each);
 		}
-		
+	}
+	
+	@Test
+	public void test_image_save () {
+		A2cContext ctx = new A2cContext("E:\\tmp\\aac\\DB_Test.xlsx");
+		WordDao dao = new WordDao(ctx);
+		dao.resetWord();
 		
 	}
+	
 
 }

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,6 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFShape;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import github.yeori.aac.dao.Picture;
 
@@ -129,7 +131,8 @@ public class Excel {
 	public static List<Picture> readPics(String absfilePath, String sheetName) {
 		Workbook wbook = null;
 		try {
-			wbook = WorkbookFactory.create(new File(absfilePath));
+//			wbook = WorkbookFactory.create(new File(absfilePath));
+			wbook = new XSSFWorkbook(new File(absfilePath));
 			Sheet sheet = wbook.getSheet(sheetName);
 			
 			
@@ -147,10 +150,13 @@ public class Excel {
 				XSSFClientAnchor anchor = pic.getClientAnchor();
 				
 				Picture picData = new Picture(pic);
+				picData.getPicteBytes(); // 파일 닫기 전에 읽어들여야 함
 				pics.add(picData);
 			}
 			return pics;
 		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (InvalidFormatException e) {
 			throw new RuntimeException(e);
 		} finally {
 			release( wbook );

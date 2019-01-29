@@ -1,5 +1,9 @@
 package github.yeori.aac.dao;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
@@ -66,6 +70,25 @@ public class Picture {
 	public String toString() {
 		return "Picture [(" + rowIndex + ", " + colIndex + ") " + pictureName
 				+ ", " + (picteBytes == null? "unknown" : picteBytes.length + "bytes") +   "]";
+	}
+	public void saveTo(String dir, String pictureName) {
+		File imgFile = new File(dir, pictureName);
+		if ( !imgFile.exists()) {
+			try {
+				imgFile.createNewFile();
+			} catch (IOException e) {
+				throw new RuntimeException("fail to create picture file: " + pictureName + " to " + imgFile.getAbsolutePath(), e);
+			}
+		}
+		try {
+			Files.write(
+					imgFile.toPath(), 
+					this.picteBytes, 
+					StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException e) {
+			throw new RuntimeException("fail to save picture: " + pictureName + " to " + imgFile.getAbsolutePath(), e);
+		}
+		
 	}
 	
 	

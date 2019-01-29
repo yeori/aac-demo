@@ -32,8 +32,8 @@ public class WordDao {
 		}
 	}
 	
-	public List<Picture> readPictures(){
-		List<Picture> pics = Excel.readPics(ctx.getInputFilePath(), "main");
+	public List<Picture> readPictures(String sheetName){
+		List<Picture> pics = Excel.readPics(ctx.getInputFilePath(), sheetName);
 		return pics;
 	}
 	
@@ -43,8 +43,40 @@ public class WordDao {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
+		List<Picture> pics = readPictures("main");
 		Object[][] words = Excel.readSheet(ctx.getInputFilePath(), "main", true);
+		String imgRootDir = ctx.getImageDir();
+		for( int rowIndex = 1; rowIndex < words.length ; rowIndex ++) {
+			String imageName = (String) words[rowIndex][1];
+			String w1 = (String)words[rowIndex][2];
+			String w2 = (String)words[rowIndex][3];
+			String w3 = (String)words[rowIndex][4];
+			System.out.printf("%s %s %s %s(%s)", w1, w2, w3,words[rowIndex][5],  words[rowIndex][5].getClass().getName());
+			int cateSeq = toInt(words[rowIndex][5]);
+			Picture pic = findByLoc(pics, rowIndex, 0);
+			pic.saveTo(imgRootDir, imageName);
+			
+		}
 		
 		
+	}
+
+	private int toInt(Object val) {
+		if ( val.getClass() == String.class) {
+			String s = (String) val;
+			return Integer.parseInt(s.trim());
+		} else if ( val.getClass() == Integer.class) {
+			return (Integer)val;
+		} else {
+			throw new RuntimeException("what is this? " + val + " , " + val.getClass().getName());
+		}
+	}
+
+	Picture findByLoc(List<Picture> pics, int rowIndex, int colIndex) {
+		return pics.stream()
+				   .filter(p-> 
+				   		p.getRowIndex().intValue() == rowIndex 
+				   		&& p.getColIndex().intValue() == colIndex)
+		           .findFirst().get();
 	}
 }

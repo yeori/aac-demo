@@ -37,12 +37,7 @@ public class WordDao {
 		return pics;
 	}
 	
-	public void resetWord() {
-		Connection con = ctx.getConnection();
-		clear(con);
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		
+	public void updatePics() {
 		List<Picture> pics = readPictures("main");
 		Object[][] words = Excel.readSheet(ctx.getInputFilePath(), "main", true);
 		String imgRootDir = ctx.getImageDir();
@@ -52,13 +47,42 @@ public class WordDao {
 			String w2 = (String)words[rowIndex][3];
 			String w3 = (String)words[rowIndex][4];
 			System.out.printf("%s %s %s %s(%s)", w1, w2, w3,words[rowIndex][5],  words[rowIndex][5].getClass().getName());
-			int cateSeq = toInt(words[rowIndex][5]);
 			Picture pic = findByLoc(pics, rowIndex, 0);
 			pic.saveTo(imgRootDir, imageName);
-			
 		}
+	}
+	public void updatetWords() {
+		Connection con = ctx.getConnection();
+		clear(con);
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		
+		Object [][] data = Excel.readSheet(ctx.getInputFilePath(), "main", true);
 		
+		try {
+			String query = "INSERT INTO words(word_name, word2, word3, cate_ref ) VALUES ( ? , ? , ?, ?)";
+			stmt = con.prepareStatement(query);
+			int irow = 1;
+			for (; irow < data.length; irow++) {
+				Object[] row = data[irow]; // [Picture, PictuerName, W1, W2, W3, Category, Pt ID]
+				String w1 = (String)row[2];
+				String w2 = (String)row[3];
+				String w3 = (String)row[4];
+				int cateSeq = toInt(row[5]);
+				
+				stmt.setString(1, w1);
+				stmt.setString(2, w2);
+				stmt.setString(3, w3);
+				stmt.setInt(4, cateSeq);
+				stmt.executeUpdate();
+				stmt.clearParameters();
+			}
+			
+		} catch ( SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			ctx.release(con, stmt, rs);
+		}
 	}
 
 	private int toInt(Object val) {

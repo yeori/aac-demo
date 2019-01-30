@@ -10,11 +10,13 @@ import org.junit.Test;
 
 import github.yeori.aac.dao.A2cContext;
 import github.yeori.aac.dao.CategoryDao;
+import github.yeori.aac.dao.WordDao;
 
 public class ExcelTest {
 
-//	static A2cContext ctx ;
-	CategoryDao dao;
+	A2cContext ctx ;
+	CategoryDao cateDao;
+	private WordDao wordDao;
 	
 //	@BeforeClass
 //	public void ready() {
@@ -24,7 +26,8 @@ public class ExcelTest {
 	@Before
 	public void init() {
 		A2cContext ctx = new A2cContext();
-		dao = new CategoryDao(ctx);
+		cateDao = new CategoryDao(ctx);
+		wordDao = new WordDao(ctx);
 		
 	}
 	@Test
@@ -42,10 +45,18 @@ public class ExcelTest {
 	
 	@Test
 	public void resetCategory() {
-		dao.resetCategories();
-		assertTrue(true);
+		cateDao.resetCategories();
 	}
 
+	@Test
+	public void test_updateWords() {
+		wordDao.updatetWords();
+	}
+	
+	@Test
+	public void test_updatePics() {
+		wordDao.updatePics();
+	}
 	@Test
 	public void test_dbl_fraction() {
 		assertTrue( 2.3 % 1 != 0 );

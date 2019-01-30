@@ -12,7 +12,7 @@ public class A2cContext {
 	 * 데이터를 읽어들일 excel 파일 경로
 	 * input.file.path
 	 */
-	private String inputFilePath = "E:/tmp/aac/DB_Test.xlsx";
+	private String inputFilePath = "DB_V2.xlsx";
 	/**
 	 * excel 파일이 저장될 데이터베이스 경로
 	 */

@@ -28,7 +28,7 @@ public class ImagePathTest {
 	public void test_image_save () {
 		A2cContext ctx = new A2cContext("E:\\tmp\\aac\\DB_Test.xlsx");
 		WordDao dao = new WordDao(ctx);
-		dao.resetWord();
+		dao.updatetWords();
 		
 	}
 	

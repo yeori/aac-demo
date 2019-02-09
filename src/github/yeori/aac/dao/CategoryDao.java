@@ -72,12 +72,13 @@ public class CategoryDao {
 	List<Cate> buildCategories(Object[][] data) {
 		Stack<Cate> stack = new Stack<>();
 		List<Cate> categories = new ArrayList<>();
-		for (int ir = 1; ir < data.length; ir++) {
+		int ir = 1; // skip labels at index 0
+		for (; ir < data.length; ir++) {
 			Object[] row = data[ir]; // [SEQ, LVL0, LVL1, LVL2]
 			if(Util.stringsOf(row, "NULL")) {
 				break;
 			}
-			Cate c = Cate.resolve(row);
+			Cate c = Cate.convert(row);
 			if(c.isRoot()) {
 				stack.clear();
 				stack.push(c);
@@ -120,7 +121,7 @@ public class CategoryDao {
 			this.cateName = cateName;
 			this.level = 0;
 		}
-		public static Cate resolve(Object[] data) {
+		public static Cate convert(Object[] data) {
 			// [SEQ, LVL0, LVL1, LVL2]
 			int seq = Util.toInt(data[0]);
 			String name = null;
